@@ -1,0 +1,102 @@
+<nav
+  class="w-full bg-white dark:bg-gray-900 shadow-lg fixed z-30 top-0 left-0 flex justify-between items-center p-4"
+>
+  <button
+    type="button"
+    class="toggle-button p-2 flex items-center aspect-square rounded-lg border-1 border-gray-200 dark:border-gray-100 hover:bg-gray-100 cursor-pointer dark:hover:bg-gray-800"
+    (click)="toggleSidebar()"
+    title="Abrir/Cerrar menú lateral"
+  >
+    <i class="bi bi-list text-2xl text-gray-900 dark:text-gray-100"></i>
+  </button>
+
+  <!-- Sidebar -->
+  @if (isSidebarOpen) {
+  <div
+    class="sidebar h-screen fixed top-0 left-0 z-50 flex flex-col items-start space-y-4 bg-white p-6 shadow-lg dark:bg-gray-900"
+  >
+    <div class="flex items-center space-x-2">
+      <div
+        class="bg-cyan-600 p-1 rounded-full text-white w-12 h-12 flex justify-center items-center"
+      >
+        <i class="bi bi-activity text-3xl font-bold"></i>
+      </div>
+      <h1
+        class="text-2xl font-bold text-cyan-600 dark:text-gray-100 select-none"
+      >
+        MediWave
+      </h1>
+    </div>
+
+    <!-- Links -->
+    <div class="w-full flex flex-col items-center space-y-2">
+      <a
+        href="auth/user/home"
+        class="w-full flex items-center space-x-2 text-cyan-600 dark:text-cyan-400 hover:text-cyan-800 dark:hover:text-cyan-200 hover:bg-cyan-100 dark:hover:bg-cyan-800 p-2 rounded-lg transition-colors duration-300"
+      >
+        <i class="bi bi-house-door text-xl"></i>
+        <span>Inicio</span>
+      </a>
+      <a
+        href="auth/user/appointments"
+        class="w-full flex items-center space-x-2 text-cyan-600 dark:text-cyan-400 hover:text-cyan-800 dark:hover:text-cyan-200 hover:bg-cyan-100 dark:hover:bg-cyan-800 p-2 rounded-lg transition-colors duration-300"
+      >
+        <i class="bi bi-calendar2-week text-xl"></i>
+        <span>Citas</span>
+      </a>
+      <a
+        href="auth/user/medical-history"
+        class="w-full flex items-center space-x-2 text-cyan-600 dark:text-cyan-400 hover:text-cyan-800 dark:hover:text-cyan-200 hover:bg-cyan-100 dark:hover:bg-cyan-800 p-2 rounded-lg transition-colors duration-300"
+      >
+        <i class="bi bi-journal-medical text-xl"></i>
+        <span>Historial Médico</span>
+      </a>
+      <a
+        href="auth/user/profile"
+        class="w-full flex items-center space-x-2 text-cyan-600 dark:text-cyan-400 hover:text-cyan-800 dark:hover:text-cyan-200 hover:bg-cyan-100 dark:hover:bg-cyan-800 p-2 rounded-lg transition-colors duration-300"
+      >
+        <i class="bi bi-person text-xl"></i>
+        <span>Perfil</span>
+      </a>
+    </div>
+  </div>
+  }
+
+  <!-- Blur (solo visible si el sidebar está abierto) -->
+  @if (isSidebarOpen) {
+  <div
+    class="fixed top-0 left-0 z-40 w-full h-screen"
+    style="background-color: rgba(0, 0, 0, 0.5)"
+  ></div>
+  }
+
+  <div class="flex items-center space-x-4">
+    <button
+      type="button"
+      class="p-2 flex items-center space-x-2 rounded-lg border-1 border-gray-200 dark:border-gray-100 hover:bg-gray-100 cursor-pointer dark:hover:bg-gray-800"
+      (click)="openModalNewAppointment()"
+    >
+      <i
+        class="bi bi-plus-circle text-2xl text-gray-900 dark:text-gray-100"
+      ></i>
+      <span class="text-gray-900 dark:text-gray-100">Nueva Cita</span>
+    </button>
+    <app-avatar
+      [username]="username"
+      [width]="'w-12'"
+      [height]="'h-12'"
+      [fontSize]="'text-sm'"
+    />
+  </div>
+</nav>
+
+@if(isModalOpen) {
+    <app-modal-schedule-new-appointment
+      [specialists]="specialists"
+      [isModalOpen]="isModalOpen"
+      [isModalOpen]="isModalOpen"
+      (closeModalNewAppointment)="closeModalNewAppointment()"
+      (nextStep)="nextStep()"
+      (previousStep)="previousStep()"
+    />
+  }

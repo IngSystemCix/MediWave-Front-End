@@ -1,0 +1,25 @@
+<div class="flex flex-col spcae-y-4">
+  <div class="w-full flex items-center justify-between">
+    <div class="flex flex-col items-start justify-start space-y-2">
+      <h2 class="text-3xl font-bold">Medicamentos</h2>
+      <span
+        class="text-sm sm:text-sm md:text-lg font-semibold text-gray-500 dark:text-gray-200"
+        >Listado de medicamentos activos y su información</span
+      >
+    </div>
+    <button
+      class="bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer"
+      title="Atrás"
+      (click)="goBack()"
+    >
+      <i class="bi bi-arrow-left"></i>
+    </button>
+  </div>
+  <app-data-table
+    [columns]="columns"
+    [data]="medicationsHistories"
+    [placeholder]="'Buscar medicamento...'"
+    [rows]="3"
+    [iconsCell]="iconsCell"
+  />
+</div>

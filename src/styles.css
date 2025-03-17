@@ -1,0 +1,85 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+@import "../node_modules/preline/variants.css";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --breakpoint-xs: 30rem;
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.dark input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.dark input[type="color"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.dark input[type="file"]::-webkit-file-upload-button {
+  filter: invert(1);
+}
+
+.loader-overlay {
+  @apply fixed inset-0 bg-white dark:bg-gray-900 flex flex-col space-y-4
+         items-center justify-center z-50 transition-opacity duration-700;
+}
+
+.loader-hidden {
+  @apply opacity-0 pointer-events-none;
+}
+
+.loader-icon {
+  @apply text-5xl text-cyan-500 dark:text-cyan-300;
+}
+
+/* Custom scrollbar styles for all browsers */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+  border: 3px solid #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Firefox scrollbar styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+/* Edge and IE scrollbar styles */
+*::-ms-scrollbar {
+  width: 12px;
+}
+
+*::-ms-scrollbar-track {
+  background: #f1f1f1;
+}
+
+*::-ms-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+  border: 3px solid #f1f1f1;
+}
+
+*::-ms-scrollbar-thumb:hover {
+  background: #555;
+}

@@ -1,0 +1,395 @@
+<div class="flex flex-col space-y-4">
+  <div class="w-full flex items-center justify-between">
+    <div class="flex flex-col items-start justify-start space-y-2">
+      <h2 class="text-3xl font-bold">Solicitar Recarga de Medicamentos</h2>
+    </div>
+    <button
+      class="bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer"
+      title="Atrás"
+      (click)="goBack()"
+    >
+      <i class="bi bi-arrow-left"></i>
+    </button>
+  </div>
+  <!-- STEP REQUEST MEDICATION -->
+  <div class="w-full">
+    @switch (positionStep) { @case (1) {
+    <!-- STEP 1 -->
+    <div class="w-full flex flex-col space-y-4">
+      <span class="text-sm font-semibold text-gray-500 dark:text-gray-200"
+        >Selecciona los medicamentos que necesitas recargar</span
+      >
+      <div class="w-full h-60 overflow-y-auto flex flex-col space-y-2">
+        @for (requestMedication of requestMedications; track requestMedication)
+        { @if (requestMedication.reaminingTime <= 10) {
+        <div
+          class="w-full bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 flex items-center justify-center space-x-2"
+        >
+          <div class="h-full w-1/12 flex items-start justify-center">
+            <input
+              type="checkbox"
+              class="h-6 w-6 accent-cyan-500 focus:ring-cyan-500 cursor-pointer active:cursor-pointer disabled:cursor-not-allowed"
+              (change)="toggleRequestMedication(requestMedication)"
+              [disabled]="requestMedication.amountAvailable === 0"
+            />
+          </div>
+          <div class="h-full w-11/12 flex flex-col space-y-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-lg font-semibold">{{
+                requestMedication.name
+              }}</span>
+              <span class="text-sm font-semibold">{{
+                requestMedication.amount
+              }}</span>
+            </div>
+            <span class="text-sm font-semibold flex items-center space-x-2">
+              @if (requestMedication.amountAvailable !== 0) {
+              <i
+                class="bi bi-check2-circle text-cyan-600 dark:text-cyan-200"
+              ></i>
+              }@else {
+              <i class="bi bi-x-circle text-red-600 dark:text-red-200"></i>
+              }
+              <span>
+                {{
+                  requestMedication.amountAvailable !== 0
+                    ? requestMedication.amountAvailable +
+                      " recargas disponibles"
+                    : "No hay recargas disponibles"
+                }}
+              </span>
+            </span>
+            <span class="text-sm font-semibold flex items-center space-x-2">
+              <i
+                class="bi bi-exclamation-circle {{
+                  requestMedication.reaminingTime <= 5
+                    ? 'text-yellow-600 dark:text-yellow-200'
+                    : 'text-cyan-800 dark:text-cyan-200'
+                }}"
+              ></i>
+              <span>
+                {{ requestMedication.reaminingTime }} días restantes
+                {{
+                  requestMedication.reaminingTime <= 5
+                    ? "(recarga recomendada)"
+                    : ""
+                }}
+              </span>
+            </span>
+          </div>
+        </div>
+        } }@empty {
+        <div
+          class="w-full bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 flex items-center justify-center"
+        >
+          <span class="text-lg font-semibold"
+            >No hay medicamentos disponibles para recargar</span
+          >
+        </div>
+        }
+      </div>
+      <span class="text-sm font-semibold text-gray-500 dark:text-gray-200"
+        >Medicamentos no elegibles para recarga:</span
+      >
+      <div class="w-full h-32 overflow-y-hidden overflow-x-auto flex space-x-2">
+        @for (requestMedication of requestMedications; track requestMedication)
+        { @if (requestMedication.reaminingTime > 10) {
+        <div
+          class="w-full bg-cyan-50 dark:bg-slate-800 rounded-lg shadow-md p-4 flex items-center justify-center"
+        >
+          <div class="h-full w-11/12 flex flex-col space-y-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-lg font-semibold">{{
+                requestMedication.name
+              }}</span>
+              <span class="text-sm font-semibold">{{
+                requestMedication.amount
+              }}</span>
+            </div>
+            <span class="text-sm font-semibold flex items-center space-x-2">
+              @if (requestMedication.amountAvailable !== 0) {
+              <i
+                class="bi bi-check2-circle text-cyan-600 dark:text-cyan-200"
+              ></i>
+              }@else {
+              <i class="bi bi-x-circle text-red-600 dark:text-red-200"></i>
+              }
+              <span>
+                {{
+                  requestMedication.amountAvailable !== 0
+                    ? requestMedication.amountAvailable +
+                      " recargas disponibles"
+                    : "No hay recargas disponibles"
+                }}
+              </span>
+            </span>
+            <span class="text-sm font-semibold flex items-center space-x-2">
+              <i
+                class="bi bi-exclamation-circle {{
+                  requestMedication.reaminingTime <= 5
+                    ? 'text-yellow-600 dark:text-yellow-200'
+                    : 'text-cyan-800 dark:text-cyan-200'
+                }}"
+              ></i>
+              <span class="text-nowrap">
+                {{ requestMedication.reaminingTime }} días restantes
+              </span>
+            </span>
+          </div>
+        </div>
+        } }@empty {
+        <div
+          class="w-full bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 flex items-center justify-center"
+        >
+          <span class="text-lg font-semibold"
+            >No hay medicamentos no elegibles para recargar</span
+          >
+        </div>
+        }
+      </div>
+    </div>
+    } @case (2) {
+    <!-- STEP 2 -->
+    <div class="w-full flex flex-col space-y-4">
+      <div class="w-full flex flex-col space-y-4">
+        <label class="w-full flex space-x-2 items-center">
+          <input
+            type="radio"
+            class="h-6 w-6 accent-cyan-500 focus:ring-cyan-500 cursor-pointer active:cursor-pointer disabled:cursor-not-allowed"
+            name="requestMedication"
+            value="pharmacy"
+            [(ngModel)]="selectedMethod"
+          />
+          <span class="text-lg font-semibold">Recoger en farmacia</span>
+        </label>
+        @if (selectedMethod === 'pharmacy') {
+        <div class="w-full flex flex-col space-y-2 px-8">
+          <label class="flex flex-col space-y-2">
+            <span class="text-sm font-semibold text-gray-500 dark:text-gray-200"
+              >Selecciona la farmacia donde deseas recoger tus
+              medicamentos</span
+            >
+            <select
+              class="w-full bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-300"
+              [(ngModel)]="selectedPharmacy"
+            >
+              <option [ngValue]="null" disabled selected>
+                Selecciona una farmacia
+              </option>
+              @for (pharmacy of pharmacies; track pharmacy) {
+              <option [ngValue]="pharmacy">{{ pharmacy.name }}</option>
+              }
+            </select>
+          </label>
+          @if (selectedPharmacy != null) {
+          <div
+            class="w-full rounded-lg bg-cyan-50 dark:bg-slate-800 p-4 flex flex-col items-start justify-center space-y-2"
+          >
+            <span class="text-sm font-semibold flex items-center space-x-2">
+              <i class="bi bi-geo-alt"></i>
+              <span>{{ getDataPharmacy()?.address }}</span>
+            </span>
+            <span class="text-sm font-semibold">{{
+              getDataPharmacy()?.openingHours
+            }}</span>
+            <hr
+              class="w-full border-t-2 border-gray-200 dark:border-gray-700"
+            />
+            <span class="text-sm font-semibold flex items-center space-x-2">
+              <i class="bi bi-calendar4-event"></i>
+              <span>Disponible para recoger: {{ getDayToPickUp() }}</span>
+            </span>
+          </div>
+          }
+        </div>
+        }
+        <label class="w-full flex space-x-2 items-center">
+          <input
+            type="radio"
+            class="h-6 w-6 accent-cyan-500 focus:ring-cyan-500 cursor-pointer active:cursor-pointer disabled:cursor-not-allowed"
+            name="requestMedication"
+            value="home"
+            [(ngModel)]="selectedMethod"
+          />
+          <span class="text-lg font-semibold">Entrega a domicilio</span>
+        </label>
+        @if (selectedMethod === 'home') {
+        <div class="flex flex-col space-y-2">
+          <div
+            class="w-full rounded-lg bg-cyan-50 dark:bg-slate-800 p-4 flex flex-col items-start justify-center space-y-2"
+          >
+            <span class="text-sm font-semibold flex items-center space-x-2">
+              <i class="bi bi-truck"></i>
+              <span>{{ homeDelivery.address }}</span>
+            </span>
+            <span class="text-sm font-semibold ml-6">{{
+              homeDelivery.city
+            }}</span>
+            <hr
+              class="w-full border-t-2 border-gray-200 dark:border-gray-700"
+            />
+            <span class="text-sm font-semibold flex items-center space-x-2">
+              <i class="bi bi-calendar4-event"></i>
+              <span>Fecha estimada de entrega: {{ getDayToPickUpHome() }}</span>
+            </span>
+            <span class="text-sm font-semibold flex items-center space-x-2">
+              <i class="bi bi-calendar4-event"></i>
+              <span>Horario de entrega: {{ homeDelivery.deliveryTime }}</span>
+            </span>
+          </div>
+          <span
+            class="text-sm font-semibold text-yellow-700 dark:text-yellow-200"
+            >* La entrega a domicilio tiene un costo adicional de
+            {{ getDeliveryCostMoney() }}</span
+          >
+        </div>
+        }
+      </div>
+      <hr class="w-full border-t-2 border-gray-200 dark:border-gray-700" />
+      <div class="w-full flex flex-col space-y-2">
+        <span class="text-sm font-semibold text-gray-500 dark:text-gray-200"
+          >Notas adicionales (opcional)</span
+        >
+        <textarea
+          class="w-full h-32 bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-300"
+          placeholder="Añade cualquier instrucción especial para tu recarga..."
+          style="resize: none"
+          [(ngModel)]="additionalNotes"
+        ></textarea>
+      </div>
+    </div>
+    } @case (3) {
+    <!-- STEP 3 -->
+    <div class="w-full flex flex-col space-y-4">
+      <div
+        class="w-full rounded-lg bg-gray-50 dark:bg-slate-800 p-4 flex flex-col space-y-2 h-42 overflow-y-auto"
+      >
+        <span class="text-lg font-semibold">Resumen de la solicitud</span>
+
+        <!-- Medicamentos seleccionados -->
+        <div class="flex flex-col space-y-1">
+          <span class="text-sm font-semibold">Medicamentos seleccionados:</span>
+          @for (med of requestMedications; track med) { @if (med.isChecked) {
+          <div class="text-sm flex items-center space-x-2">
+            <i class="bi bi-check2-circle text-cyan-600 dark:text-cyan-200"></i>
+            <span>{{ med.name }} - {{ med.amount }}</span>
+          </div>
+          } }
+        </div>
+
+        <!-- Método de entrega -->
+        <div class="flex flex-col space-y-1">
+          <span class="text-sm font-semibold">Método de entrega:</span>
+          <span class="text-sm flex items-center space-x-2">
+            <i
+              class="bi {{
+                selectedMethod === 'pharmacy' ? 'bi-hospital' : 'bi-truck'
+              }}"
+            ></i>
+            <span>{{
+              selectedMethod === "pharmacy"
+                ? "Recoger en farmacia"
+                : "Entrega a domicilio"
+            }}</span>
+          </span>
+          @if (selectedMethod === 'home' && homeDelivery != null) {
+          <span class="text-sm ml-6">{{ homeDelivery.address }}</span>
+          <span class="text-sm ml-6">{{ homeDelivery.city }}</span>
+          <span class="text-sm ml-6"
+            ><strong>Entrega:</strong> {{ getDayToPickUpHome() }}</span
+          >
+          }
+          <!-- Farmacia seleccionada (solo si aplica) -->
+          @if (selectedMethod === 'pharmacy' && selectedPharmacy != null) {
+          <div class="flex flex-col space-y-1">
+            <span class="text-sm ml-6">{{ selectedPharmacy.name }}</span>
+            <span class="text-sm ml-6">{{ selectedPharmacy.address }}</span>
+            <span class="text-sm ml-6"
+              ><strong>Disponible:</strong> {{ getDayToPickUp() }}</span
+            >
+          </div>
+          }
+        </div>
+
+        <!-- Notas adicionales (solo si existen) -->
+        @if (additionalNotes !== '') {
+        <div class="flex flex-col space-y-1">
+          <span class="text-sm font-semibold">Notas adicionales:</span>
+          <span class="text-sm">{{ additionalNotes }}</span>
+        </div>
+        }
+      </div>
+      <div
+        class="w-full rounded-lg bg-cyan-50 dark:bg-slate-800 p-4 flex flex-col space-y-2 text-cyan-800 dark:text-cyan-200"
+      >
+        <span class="text-lg font-semibold flex items-center space-x-2">
+          <i class="bi bi-info-circle"></i>
+          <span>Información importante</span>
+        </span>
+        <p class="text-sm">
+          Tu solicitud será procesada en las próximas 24 horas. Recibirás una notificación cuando tus medicamentos estén listos para recoger o en camino a tu domicilio.
+        </p>
+        <p class="text-sm">
+          Si necesitas tus medicamentos con urgencia, por favor contacta directamente con tu médico o farmacia.
+        </p>
+      </div>
+      <label class="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          class="h-6 w-6 accent-cyan-500 focus:ring-cyan-500 cursor-pointer active:cursor-pointer disabled:cursor-not-allowed"
+          [(ngModel)]="acceptTerms"
+        />
+        <span class="text-sm font-semibold text-gray-500 dark:text-gray-200"
+          >Confirmo que la información proporcionada es correcta y autorizo el procesamiento de mi solicitud de recarga.</span
+        >
+      </label>
+    </div>
+
+    } }
+
+    <!-- SECTION BUTTONS -->
+    <div
+      class="w-full flex items-center pt-6 {{
+        positionStep === 1 ? 'justify-end' : 'justify-between'
+      }}"
+    >
+      @switch (positionStep) { @case (1) {
+      <button
+        class="bg-cyan-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-cyan-600 transition-all duration-300 cursor-pointer active:bg-cyan-700 active:cursor-pointer disabled:bg-gray-500 disabled:cursor-not-allowed"
+        (click)="nextStep()"
+        [disabled]="isRequestMedicationsEmpty()"
+      >
+        Siguiente
+      </button>
+      } @case (2) {
+      <button
+        class="bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer"
+        (click)="previousStep()"
+      >
+        Atrás
+      </button>
+      <button
+        class="bg-cyan-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-cyan-600 transition-all duration-300 cursor-pointer active:bg-cyan-700 active:cursor-pointer disabled:bg-gray-500 disabled:cursor-not-allowed"
+        (click)="nextStep()"
+        [disabled]="isSelectedPharmacyOrHomeDelivery()"
+      >
+        Siguiente
+      </button>
+      } @case (3) {
+      <button
+        class="bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer"
+        (click)="previousStep()"
+      >
+        Atrás
+      </button>
+      <button
+        class="bg-cyan-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-cyan-600 transition-all duration-300 cursor-pointer active:bg-cyan-700 active:cursor-pointer disabled:bg-gray-500 disabled:cursor-not-allowed"
+        (click)="requestMedicationsAction()"
+        [disabled]="!acceptTerms"
+      >
+        Solicitar
+      </button>
+      } }
+    </div>
+  </div>
+</div>

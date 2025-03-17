@@ -1,0 +1,166 @@
+@if (isModalOpen) {
+<div
+  class="w-full h-screen fixed top-0 left-0 z-50 flex justify-center items-center px-6"
+  style="background-color: rgba(0, 0, 0, 0.5)"
+>
+  <div
+    class="relative w-full max-w-2xl bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg flex flex-col space-y-4"
+  >
+    <div class="flex items-center justify-between">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        Agendar Nueva Cita
+      </h2>
+      <i
+        class="bi bi-x-lg text-xl bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer"
+        (click)="closeModal()"
+      ></i>
+    </div>
+
+    <!-- Paso 1: Selección del especialista -->
+    @if (currentStep === 1) {
+    <div class="flex flex-col space-y-4">
+      <span class="text-gray-900 dark:text-gray-100"
+        >Selecciona el especialista</span
+      >
+      <label>
+        <select
+          class="w-full p-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg"
+          [(ngModel)]="selectedSpecialist"
+        >
+          <option value="" disabled selected>Selecciona un especialista</option>
+          @for(specialist of specialists; track specialist) {
+          <option [value]="specialist">{{ specialist }}</option>
+          }@empty {
+          <option value="" disabled>No hay especialistas disponibles</option>
+          }
+        </select>
+      </label>
+      <div
+        class="bg-cyan-50 rounded-md p-4 text-sm text-cyan-800 dark:bg-gray-800 dark:text-cyan-200"
+      >
+        <p class="font-medium mb-1">
+          ¿No encuentras el especialista que necesitas?
+        </p>
+        <p>
+          Puedes contactar directamente con nuestro centro de atención al
+          cliente para ayudarte a encontrar el especialista adecuado.
+        </p>
+      </div>
+    </div>
+    }
+
+    <!-- Paso 2: Selección de fecha y hora -->
+    @if (currentStep === 2) {
+    <div class="flex flex-col space-y-4">
+      <span class="text-gray-900 dark:text-gray-100"
+        >Selecciona la fecha y hora</span
+      >
+      <label class="block">
+        <input
+          type="date"
+          class="w-full p-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg"
+          [(ngModel)]="appointmentDate"
+          [min]="minDate"
+          (change)="onDateChange()"
+        />
+      </label>
+      <label class="block">
+        <app-combobox
+          [placeholder]="'Selecciona una hora'"
+          [width]="'w-full'"
+          [type]="'hour'"
+          [startHour]="'09:00'"
+          [endHour]="'17:00'"
+          [stepMinute]="30"
+          [formatHour]="'24'"
+          [(selected)]="appointmentTime"
+          [(disabled)]="isDisableHour"
+        />
+      </label>
+    </div>
+    }
+
+    <!-- Paso 3: Motivo de consulta y resumen -->
+    @if (currentStep === 3) {
+    <div class="flex flex-col space-y-4">
+      <span class="text-gray-900 dark:text-gray-100"
+        >Motivo de la consulta</span
+      >
+      <textarea
+        class="w-full p-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg"
+        rows="4"
+        style="resize: none"
+        [(ngModel)]="consultationReason"
+      ></textarea>
+
+      <div
+        class="mt-4 p-4 bg-cyan-50 text-sm text-cyan-800 dark:bg-gray-800 dark:text-cyan-200 rounded-lg flex flex-col space-y-2"
+      >
+        <h3 class="text-lg font-semibold">Resumen de la cita</h3>
+        <p class="text-sm">
+          <span class="font-semibold">Especialista:</span>
+          {{ selectedSpecialist }}
+        </p>
+        <p class="text-sm">
+          <span class="font-semibold">Fecha:</span> {{ appointmentDate }}
+        </p>
+        <p class="text-sm">
+          <span class="font-semibold">Hora:</span> {{ appointmentTime?.name }}
+        </p>
+        <p class="text-sm">
+          <span class="font-semibold">Motivo:</span> {{ consultationReason }}
+        </p>
+      </div>
+    </div>
+    }
+
+    <!-- Botones de navegación -->
+    <div class="w-full flex justify-between items-center mt-4">
+      @if(currentStep === 1) {
+      <button
+        type="button"
+        class="p-2 flex items-center space-x-2 rounded-lg border-1 border-gray-200 dark:border-gray-100 hover:bg-gray-100 cursor-pointer dark:hover:bg-gray-800"
+        (click)="closeModal()"
+      >
+        <i class="bi bi-x-circle text-2xl text-gray-900 dark:text-gray-100"></i>
+        <span class="text-gray-900 dark:text-gray-100">Cancelar</span>
+      </button>
+      } @if (currentStep > 1) {
+      <button
+        type="button"
+        class="p-2 flex items-center space-x-2 rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-400 cursor-pointer"
+        (click)="goPrevious()"
+      >
+        <i class="bi bi-arrow-left-circle text-2xl"></i>
+        <span>Anterior</span>
+      </button>
+      }
+
+      <div>
+        @if (currentStep < 3) {
+        <button
+          type="button"
+          class="p-2 flex items-center space-x-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-700 cursor-pointer active:bg-cyan-600 active:text-white dark:bg-cyan-500 dark:text-white dark:hover:bg-cyan-700 dark:active:bg-cyan-600 dark:active:text-white dark:disabled:bg-gray-600 disabled:text-gray-800 disabled:dark:text-gray-200"
+          (click)="goNext()"
+          [disabled]="isNextDisabled"
+        >
+          <i class="bi bi-check-circle text-2xl"></i>
+          <span>Continuar</span>
+        </button>
+        } @if (currentStep === 3) {
+        <button
+          type="button"
+          class="p-2 flex items-center space-x-2 rounded-lg bg-cyan-500 text-white hover:bg-cyan-700 cursor-pointer active:bg-cyan-600 active:text-white dark:bg-cyan-500 dark:text-white dark:hover:bg-cyan-700 dark:active:bg-cyan-600 dark:active:text-white disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed disabled:hover:bg-gray-300 disabled:hover:text-gray-500"
+          (click)="submitAppointment()"
+          [disabled]="isConfirmDisabled"
+        >
+          <i class="bi bi-calendar-check text-2xl"></i>
+          <span>Confirmar</span>
+        </button>
+
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,38 @@
+<div
+  class="{{
+    width
+  }} font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:border-transparent transition-all duration-300 flex justify-between items-center {{ disabled ? 'cursor-not-allowed bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300' : 'cursor-pointer focus:ring-2 focus:ring-cyan-500 bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200' }}"
+  tabindex="0"
+  (click)="openPanel()"
+>
+  @if (!selected) {
+  <span class="w-full">{{ placeholder }}</span>
+  } @else {
+  <span class="w-full">{{ selected.name }}</span>
+  }
+
+  <i class="bi {{ visiblePanel ? 'bi-chevron-up' : 'bi-chevron-down' }}"></i>
+  <div
+    class="absolute w-[calc(100%-3rem)] h-48 overflow-y-auto bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 {{
+      visiblePanel ? 'flex' : 'hidden'
+    }} flex-col space-y-2 left-6 top-52 sm:top-52 sm:max-md:top-32 md:top-36 lg:top-36 xl:top-36"
+  >
+    @switch (type) { @case ('hour') { @for (group of getGroupedHours(); track
+    group.period) {
+    <h2 class="text-black dark:text-white">{{ group.period }}</h2>
+    <!-- Muestra 'Mañana', 'Tarde' o 'Noche' -->
+    @for (hour of group.hours; track hour) {
+    <span
+      class="w-full rounded-lg px-3 py-2 cursor-pointer hover:bg-cyan-100 dark:hover:bg-slate-700 transition-all duration-300"
+      (click)="selectHour(hour)"
+      >{{ hour }}</span
+    >
+    } } } @case ('text') { @for (item of data; track item) {
+    <span
+      class="w-full rounded-lg px-3 py-2 cursor-pointer hover:bg-cyan-100 dark:hover:bg-slate-700 transition-all duration-300"
+      (click)="selectText(item)"
+      >{{ item }}</span
+    >
+    } } }
+  </div>
+</div>

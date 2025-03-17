@@ -1,0 +1,197 @@
+<div class="w-full flex flex-col space-y-4">
+  <div class="flex justify-between items-center">
+    <div class="relative max-w-xs w-full">
+      <input
+        type="text"
+        name="table-export-search"
+        id="table-export-search"
+        class="py-1.5 sm:py-2 px-3 ps-9 block w-full border-gray-200 shadow-2xs rounded-lg sm:text-sm focus:z-10 focus:border-cyan-500 focus:ring-cyan-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-900 dark:border-gray-700 dark:text-gray-400 dark:placeholder-gray-500 dark:focus:ring-gray-600"
+        placeholder="{{ placeholder }}"
+        [(ngModel)]="filterText"
+      />
+      <div
+        class="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-3"
+      >
+        <i class="bi bi-search"></i>
+      </div>
+    </div>
+    <div class="relative inline-block text-left dropdown-container">
+      <div
+        class="flex items-center space-x-2 cursor-pointer px-4 py-2 rounded-lg"
+        (click)="toggleDropdown()"
+      >
+        <i class="bi bi-download"></i>
+        <span>Exportar</span>
+        <i class="bi bi-caret-down-fill"></i>
+      </div>
+
+      <!-- Menú desplegable -->
+      @if (isDropdownOpen) {
+      <div class="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md">
+        <button
+          class="flex items-center gap-2 px-4 py-2 w-full text-left hover:bg-gray-100 cursor-pointer"
+          (click)="exportTable('excel')"
+        >
+          <div
+            class="rounded-full bg-cyan-100 text-cyan-500 p-1 w-6 h-6 flex items-center justify-center"
+          >
+            <i class="bi bi-file-earmark-excel-fill"></i>
+          </div>
+          Excel
+        </button>
+        <button
+          class="flex items-center gap-2 px-4 py-2 w-full text-left hover:bg-gray-100 cursor-pointer"
+          (click)="exportTable('pdf')"
+        >
+          <div
+            class="rounded-full bg-red-100 text-red-500 p-1 w-6 h-6 flex items-center justify-center"
+          >
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+          </div>
+          PDF
+        </button>
+      </div>
+      }
+    </div>
+  </div>
+  <div class="w-full overflow-x-auto">
+    <table class="min-w-full h-full">
+      <thead class="border-b border-gray-200 dark:border-neutral-700">
+        <tr>
+          @for (col of columns; track col) {
+          <th
+            class="py-1 group text-start font-normal focus:outline-hidden cursor-pointer"
+            (click)="toggleSort(col.field)"
+          >
+            <div
+              class="py-1 px-2.5 inline-flex items-center border border-transparent text-sm text-gray-500 rounded-md hover:border-gray-200 dark:text-neutral-200 dark:hover:border-neutral-700"
+            >
+              {{ col.header }}
+              <svg
+                class="size-3.5 ms-1 -me-0.5 text-gray-400 dark:text-neutral-500"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                @if (sortedColumn === col.field && sortDirection === 'desc') {
+                <path
+                  class="hs-datatable-ordering-desc:text-blue-600 dark:hs-datatable-ordering-desc:text-blue-500"
+                  d="m7 15 5 5 5-5"
+                ></path>
+                } @if (sortedColumn === col.field && sortDirection === 'asc') {
+                <path
+                  class="hs-datatable-ordering-asc:text-blue-600 dark:hs-datatable-ordering-asc:text-blue-500"
+                  d="m7 9 5-5 5 5"
+                ></path>
+                }
+              </svg>
+            </div>
+          </th>
+
+          }
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+        @for (item of paginatedData; track item) {
+        <tr>
+          @for (col of columns; track col; let idx = $index) {
+          <td class="py-2 px-3 text-sm text-gray-500 dark:text-neutral-400">
+            <div class="flex items-center space-x-2">
+              @if (getIconForColumn(idx)) {
+              <div
+                class="w-8 h-8 rounded-full flex justify-center items-center mr-2 {{
+                  getIconBgColorAndFgColor(idx).bgColor
+                }} {{ getIconBgColorAndFgColor(idx).fgColor }}"
+              >
+                <i class="{{ getIconForColumn(idx) }}"></i>
+              </div>
+              }
+              {{ item[col.field] }}
+            </div>
+          </td>
+          }
+        </tr>
+        }@empty {
+        <tr>
+          <td
+            class="py-2 px-3 text-sm text-gray-500 dark:text-neutral-500 text-center w-full"
+            [attr.colspan]="columns.length"
+          >
+            No se encontraron registros
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if(totalPages > 1) {
+  <div
+    class="w-full flex justify-center items-center space-x-2 overflow-hidden"
+  >
+    <button
+      title="Anterior"
+      class="py-1 px-2 text-cyan-500 font-semibold rounded-md shadow-md hover:bg-cyan-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer disabled:opacity-50"
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+    >
+      <i class="bi bi-caret-left-fill"></i>
+    </button>
+
+    <!-- Primera página siempre visible -->
+    <button
+      class="py-1 px-3 font-semibold rounded-md shadow-md cursor-pointer text-cyan-500"
+      [class.bg-cyan-500]="1 === currentPage"
+      [class.text-white]="1 === currentPage"
+      (click)="changePage(1)"
+    >
+      1
+    </button>
+
+    @if(currentPage > 4) {
+    <span class="px-2 text-gray-500">...</span>
+    }
+
+    <!-- Páginas dinámicas con un máximo de 4 números centrales -->
+    @for (page of pages; track page) { @if(page > 1 && page < totalPages &&
+    ((currentPage <= 3 && page <= 4) || (currentPage >= totalPages - 2 && page
+    >= totalPages - 3) || (page >= currentPage - 1 && page <= currentPage + 1)))
+    {
+    <button
+      class="py-1 px-3 font-semibold rounded-md shadow-md cursor-pointer text-cyan-500"
+      [class.bg-cyan-500]="page === currentPage"
+      [class.text-white]="page === currentPage"
+      (click)="changePage(page)"
+    >
+      {{ page }}
+    </button>
+    } } @if(currentPage < totalPages - 3) {
+    <span class="px-2 text-gray-500">...</span>
+    }
+
+    <!-- Última página siempre visible -->
+    <button
+      class="py-1 px-3 font-semibold rounded-md shadow-md cursor-pointer text-cyan-500"
+      [class.bg-cyan-500]="totalPages === currentPage"
+      [class.text-white]="totalPages === currentPage"
+      (click)="changePage(totalPages)"
+    >
+      {{ totalPages }}
+    </button>
+
+    <button
+      title="Siguiente"
+      class="py-1 px-2 text-cyan-500 font-semibold rounded-md shadow-md hover:bg-cyan-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer disabled:opacity-50"
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+    >
+      <i class="bi bi-caret-right-fill"></i>
+    </button>
+  </div>
+  }
+</div>

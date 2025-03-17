@@ -1,0 +1,140 @@
+<div class="flex flex-col w-full h-full p-4 space-y-4">
+  <!-- Input de búsqueda -->
+  <div class="relative">
+    <input
+      type="text"
+      class="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-slate-700 rounded-lg shadow-md dark:bg-slate-800 dark:text-white"
+      placeholder="{{ placeholder }}"
+      [value]="searchTerm()"
+      (input)="updateSearchTerm($event)"
+    />
+    <i
+      class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"
+    ></i>
+  </div>
+
+  <nav class="w-full flex justify-between border-b border-b-cyan-200">
+    <!-- Flecha izquierda -->
+    @if (showLeftArrow()) {
+    <button
+      title="Anterior"
+      class="bg-white shadow-md px-4 py-2 cursor-pointer dark:bg-slate-800 text-cyan-500 dark:text-cyan-200"
+      (click)="scrollTabs('left')"
+    >
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    }
+
+    <!-- Contenedor de tabs con scroll -->
+    <div
+      #tabsContainer
+      class="w-full overflow-hidden flex border-b border-b-cyan-200 relative"
+    >
+      <div
+        #tabsWrapper
+        class="flex gap-x-2 transition-transform duration-300 ease-in-out"
+        [style.transform]="'translateX(' + scrollOffset() + 'px)'"
+      >
+        @for (tab of tabs; track tab; let idx = $index) {
+        <button
+          title="{{ tab.title }}"
+          class="w-32 px-4 py-2 border-b-2 transition-colors duration-200 cursor-pointer truncate"
+          (click)="setActiveTab(idx)"
+          [class]="
+            activeTabIndex() === idx
+              ? 'border-cyan-500 text-cyan-600 font-semibold'
+              : 'border-transparent text-gray-500 hover:text-cyan-600 hover:border-cyan-300'
+          "
+        >
+          {{ tab.title }}
+        </button>
+        }
+      </div>
+    </div>
+
+    <!-- Flecha derecha -->
+    @if (showRightArrow()) {
+    <button
+      title="Siguiente"
+      class="bg-white shadow-md px-4 py-2 cursor-pointer dark:bg-slate-800 text-cyan-500 dark:text-cyan-200"
+      (click)="scrollTabs('right')"
+    >
+      <i class="bi bi-arrow-right"></i>
+    </button>
+    }
+  </nav>
+
+  @if (searchTerm() === '') {
+  <!-- Si el input está vacío, mostramos los tabs -->
+  <div class="w-full">
+    @if (tabs.length > 0) { @for (tab of tabs.toArray(); track tab; let idx =
+    $index) { @if (activeTabIndex() === idx && tab.content) {
+    <ng-container *ngTemplateOutlet="tab.content"></ng-container>
+    } } }
+  </div>
+  } @else {
+  <!-- Si el usuario escribe algo en el input, mostramos los datos filtrados -->
+  <div class="w-full h-64 overflow-y-auto space-y-4 px-4">
+    @for (myAppointment of filteredData(); track myAppointment) {
+    <div
+      class="w-full rounded-lg shadow-md border-2 border-gray-50 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 flex justify-between items-start p-4 hover:bg-cyan-100 dark:hover:bg-cyan-900 transition-all duration-300 cursor-pointer"
+      (click)="toggleExtraInfo(myAppointment)"
+    >
+      <div
+        class="w-full flex flex-col sm:flex-col md:flex-row lg:flex-row xl:flex-row items-start space-y-2 sm:space-y-2 md:space-x-2"
+      >
+        <app-avatar
+          [username]="getDataByColumn(myAppointment, 'nameDoctor')"
+          [width]="'w-16'"
+          [height]="'w-16'"
+          [fontSize]="'text-sm'"
+        />
+        <div class="flex flex-col items-start justify-start">
+          <span
+            class="text-lg font-semibold text-gray-900 dark:text-gray-200"
+            >{{ myAppointment["nameDoctor"] }}</span
+          >
+          <span
+            class="text-lg font-semibold text-gray-500 dark:text-gray-400"
+            >{{ myAppointment["specialty"] }}</span
+          >
+          <div
+            class="flex flex-col sm:flex-col md:flex-row text-gray-500 dark:text-gray-400"
+          >
+            <div class="w-full sm:w-full md:w-1/2 flex items-center space-x-2">
+              <i class="bi bi-calendar"></i>
+              <span>{{ myAppointment["date"] }}</span>
+            </div>
+            <div class="w-full sm:w-full md:w-1/2 flex items-center space-x-2">
+              <i class="bi bi-clock"></i>
+              <span>{{ myAppointment["hour"] }}</span>
+            </div>
+          </div>
+        </div>
+        <span
+          class="px-3 py-1 text-sm font-semibold rounded-full"
+          [ngClass]="{
+            'bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300':
+              myAppointment['status'] === 'Confirmada',
+            'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300':
+              myAppointment['status'] === 'Programada',
+            'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300':
+              myAppointment['status'] === 'Completa'
+          }"
+          >{{ myAppointment["status"] }}</span
+        >
+      </div>
+      <div class="h-full flex justify-center items-center">
+        <i class="bi bi-caret-right"></i>
+      </div>
+    </div>
+    }@empty {
+    <div
+      class="w-full h-64 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 flex justify-center items-center p-4"
+    >
+      <span class="text-lg font-semibold">No se encontraron resultados</span>
+    </div>
+    }
+  </div>
+  }
+</div>

@@ -1,0 +1,122 @@
+@if(!isVisiblePanelReasonForReschedule) {
+  <div class="w-full flex items-center justify-between">
+  <div class="flex flex-col items-start justify-start space-y-2">
+    <h2 class="text-3xl font-bold">Reprogramar Cita</h2>
+    <span
+      class="text-sm sm:text-sm md:text-lg font-semibold text-gray-500 dark:text-gray-200"
+      >Selecciona una nueva fecha y hora para tu cita</span
+    >
+  </div>
+  <button
+    class="bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer"
+    (click)="previewView()"
+    title="Atrás"
+  >
+    <i class="bi bi-arrow-left"></i>
+  </button>
+</div>
+
+<div class="w-full flex flex-col space-y-4">
+  <div class="w-full rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-200/10 dark:text-amber-500 p-4 flex items-start space-x-2">
+    <i class="bi bi-exclamation-triangle text-2xl"></i>
+    <div class="flex flex-col">
+      <span class="text-lg font-semibold">Información sobre tu cita actual</span>
+      <span class="text-sm font-semibold">{{ nameDoctor }} - {{ specialty }}</span>
+      <span class="text-sm font-semibold">{{ date }} - {{ hour }}</span>
+    </div>
+  </div>
+  <label class="w-full flex flex-col space-y-2">
+    <span class="text-lg font-semibold">Nueva fecha de la cita</span>
+    <input
+      type="date"
+      class="w-full bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
+      [(ngModel)]="newDate"
+      (change)="onDateChange()"
+      min="{{ minDate }}"
+    />
+  </label>
+  <label class="w-full flex flex-col space-y-2">
+    <span class="text-lg font-semibold">Nueva hora de la cita</span>
+    <app-combobox [placeholder]="'Selecciona una hora'" [width]="'w-full'" [type]="'hour'" [startHour]="'09:00'" [endHour]="'17:00'"  [stepMinute]="30" [formatHour]="'24'" [(selected)]="selectedHour" [(disabled)]="isDisabledHour"/>
+  </label>
+  @if (selectedHour) {
+    <div class="w-full rounded-lg bg-cyan-100 text-cyan-700 dark:bg-cyan-200/10 dark:text-cyan-500 p-4 flex items-start space-x-2">
+      <i class="bi bi-clock-history text-2xl"></i>
+      <div class="flex flex-col">
+        <span class="text-lg font-semibold">Nueva cita seleccionada:</span>
+        <span class="text-sm font-semibold">{{ getNewDate() }} - {{ selectedHour.name }}</span>
+      </div>
+    </div>
+  }
+</div>
+
+<div class="w-full flex justify-between items-center space-x-2 mt-4">
+    <!-- boton para continua -->
+    <button
+      class="w-full bg-cyan-500 text-white cursor-pointer font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-cyan-600 transition-all duration-300 active:cursor-pointer active:bg-cyan-500 active:text-white disabled:bg-gray-300 disabled:text-gray-800 dark:disabled:bg-gray-600 disabled:dark:text-gray-200 disabled:cursor-not-allowed"
+      (click)="onContinueReasonForReschedule()"
+      [disabled]="!selectedHour"
+    >
+      Continuar
+    </button>
+</div>
+
+}@else {
+  <div class="flex flex-col space-y-4">
+    <div class="flex flex-col space-y-2">
+      <h2 class="text-lg font-bold">Motivo de la reprogramación</h2>
+      <textarea
+        class="w-full bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
+        placeholder="Escribe el motivo de la reprogramación"
+        rows="4"
+        [(ngModel)]="reason"
+        (ngModelChange)="onReasonChange()"
+        style="resize: none;"
+      ></textarea>
+    </div>
+  </div>
+
+  <div class="w-full h-[7rem] overflow-y-auto rounded-lg bg-cyan-100 text-cyan-700 dark:bg-cyan-200/10 dark:text-cyan-500 p-4 flex flex-col space-x-2 mt-4">
+    <span class="text-lg font-bold">Resumen de la reprogramación: </span>
+    <div class="flex items-center space-x-2">
+      <span class="text-sm font-bold">Cita actual: </span>
+      <span class="text-sm font-semibold">{{ date }} - {{ hour }}</span>
+    </div>
+    <div class="flex items-center space-x-2">
+      <span class="text-sm font-bold">Nueva cita: </span>
+      <span class="text-sm font-semibold">{{ getNewDate() }} - {{ selectedHour.name }}</span>
+    </div>
+    @if (!isConfirmRescheduleAppointment) {
+      <div class="flex flex-col space-y-2">
+        <span class="text-sm font-bold">Razón de la reprogramación: </span>
+        <span class="text-sm font-semibold break-words">{{ reason }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="w-full rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-200/10 dark:text-amber-500 p-4 flex items-start space-x-2 mt-4">
+    <i class="bi bi-exclamation-triangle text-2xl"></i>
+    <div class="flex flex-col">
+      <span class="text-sm font-semibold">Las reprogramaciones con menos de 24 horas de antelación pueden estar sujetas a cargos adicionales según la política del centro médico.</span>
+    </div>
+  </div>
+
+  <div class="w-full flex justify-between items-center space-x-2 mt-4">
+    <!-- boton para retroceder -->
+    <button
+      class="w-full bg-white text-cyan-500 border border-cyan-500 cursor-pointer font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-cyan-50 transition-all duration-300 dark:hover:bg-cyan-600 dark:text-white dark:border-cyan-600 dark:bg-slate-900"
+      (click)="backToReschedule()"
+      title="Atrás"
+    >
+      Atrás
+    </button>
+    <!-- boton para confirmar la reprogramación -->
+    <button
+      class="w-full bg-cyan-500 text-white cursor-pointer font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-cyan-600 transition-all duration-300 active:cursor-pointer active:bg-cyan-500 active:text-white dark:disabled:bg-gray-600 disabled:text-gray-800 disabled:dark:text-gray-200 disabled:cursor-not-allowed"
+      (click)="onConfirmReschedule()"
+      [disabled]="isConfirmRescheduleAppointment"
+    >
+      Confirmar
+    </button>
+  </div>
+}

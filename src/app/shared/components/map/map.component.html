@@ -1,0 +1,17 @@
+@defer{
+  <google-map [width]="width" [height]="height" [center]="center" [zoom]="zoom" [options]="optionsMap">
+    <map-marker [position]="center" title={{location}}></map-marker>
+  </google-map>
+}@loading{
+  <div class="w-full h-52 bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+    <i class="bi bi-geo-alt text-6xl text-gray-500 dark:text-gray-400"></i>
+  </div>
+}@placeholder {
+  <div class="w-full h-52 bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+    <i class="bi bi-geo-alt text-6xl text-gray-500 dark:text-gray-400"></i>
+  </div>
+}@error{
+  <div class="w-full h-52 bg-red-200 dark:bg-red-800 flex items-center justify-center">
+    <i class="bi bi-exclamation-triangle text-6xl text-red-500 dark:text-red-400"></i>
+  </div>
+}

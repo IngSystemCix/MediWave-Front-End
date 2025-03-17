@@ -1,0 +1,23 @@
+<div
+  class="w-full h-screen fixed top-0 left-0 z-50 flex justify-center items-center px-6"
+  style="background-color: rgba(0, 0, 0, 0.5)"
+>
+  <div
+    class="relative w-full max-w-2xl bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg flex flex-col space-y-4"
+  >
+  <div class="flex items-center justify-between">
+      <div class="flex flex-col items-start justify-start">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        Historial Médico
+        </h2>
+        <span class="text-lg font-semibold text-gray-500 dark:text-gray-400">
+          Registro completo de tu historial médico
+        </span>
+      </div>
+      <i
+        class="bi bi-x-lg text-xl bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer"
+        (click)="closeMyMedicalHistories()"
+      ></i>
+    </div>
+  </div>
+</div>

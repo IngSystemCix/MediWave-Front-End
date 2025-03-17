@@ -1,0 +1,110 @@
+<div class="w-full flex items-center justify-between">
+  <div class="flex flex-col items-start justify-start space-y-2">
+    <h2 class="text-3xl font-bold">Confirmar Asistencia</h2>
+    <span
+      class="text-sm sm:text-sm md:text-lg font-semibold text-gray-500 dark:text-gray-200"
+      >Confirma tu asistencia a la cita médica</span
+    >
+  </div>
+  <button
+    class="bg-white dark:bg-slate-800 text-gray-500 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-300 cursor-pointer"
+    (click)="previewView()"
+    title="Atrás"
+  >
+    <i class="bi bi-arrow-left"></i>
+  </button>
+</div>
+
+<div class="w-full h-72 overflow-y-auto px-6">
+  <div
+    class="w-full rounded-lg bg-cyan-100 text-cyan-700 dark:bg-cyan-200/10 dark:text-cyan-500 p-4 flex items-start space-x-2 mt-4"
+  >
+    <div class="flex flex-col">
+      <span class="text-lg font-semibold">Detalles de la cita</span>
+      <div class="flex items-center space-x-2">
+        <i class="bi bi-calendar-check text-2xl"></i>
+        <span class="text-lg font-semibold">{{ date }}</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <i class="bi bi-clock text-2xl"></i>
+        <span class="text-lg font-semibold">{{ hour }}</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <i class="bi bi-person text-2xl"></i>
+        <span class="text-sm font-semibold"
+          >{{ nameDoctor }} - {{ specialty }}</span
+        >
+      </div>
+      <div class="flex items-center space-x-2">
+        <i class="bi bi-geo-alt text-2xl"></i>
+        <span class="text-sm font-semibold">{{ location }} - {{ street }}</span>
+      </div>
+    </div>
+  </div>
+
+  <label class="w-full flex items-center space-x-2 mt-4 cursor-pointer">
+    <input
+      type="checkbox"
+      class="hidden"
+      [(ngModel)]="confirmReminder"
+      class="size-6 accent-cyan-600 rounded-lg cursor-pointer"
+    />
+    <span>Enviarme un recordatorio</span>
+  </label>
+
+  @if (confirmReminder) {
+  <div class="w-full flex flex-col items-start space-y-2 pl-8">
+    <span class="text-sm font-semibold text-gray-500 dark:text-gray-200 mt-4"
+      >¿Cuándo quieres recibir el recordatorio?</span
+    >
+    @for (remin of reminders; track remin) {
+    <label class="w-full flex items-center space-x-2 cursor-pointer">
+      <input
+        type="radio"
+        class="hidden"
+        [(ngModel)]="reminder"
+        [value]="remin"
+        class="size-4 accent-cyan-600 rounded-lg cursor-pointer"
+      />
+      <span>{{ remin }}</span>
+    </label>
+    }
+    <div
+      class="w-full rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-200/10 dark:text-gray-200 p-4 flex items-start space-x-2 mt-4"
+    >
+      <i class="bi bi-bell text-2xl"></i>
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold"
+          >Los recordatorios se enviarán por correo electrónico y notificación
+          en la aplicación.</span
+        >
+      </div>
+    </div>
+  </div>
+  }
+
+  <div
+    class="w-full rounded-lg bg-gray-100 text-gray-700 dark:bg-gray-200/10 dark:text-gray-200 p-4 flex items-start space-x-2 mt-4"
+  >
+    <i class="bi bi-exclamation-triangle text-2xl"></i>
+    <div class="flex flex-col">
+      <span class="text-lg font-semibold">Información importante:</span>
+      <span class="text-sm font-semibold"
+        >Al confirmar tu asistencia, nos ayudas a organizar mejor la agenda del
+        médico y reducir los tiempos de espera. Si por algún motivo no puedes
+        asistir, por favor cancela o reprograma tu cita con al menos 24 horas de
+        antelación.</span
+      >
+    </div>
+  </div>
+</div>
+
+<div class="w-full flex items-center justify-end mt-4">
+  <button
+    class="w-full bg-cyan-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-cyan-700 transition-all duration-300 cursor-pointer"
+    (click)="confirmAttendance()"
+    title="Confirmar asistencia"
+  >
+    Confirmar
+  </button>
+</div>
